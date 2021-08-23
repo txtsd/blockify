@@ -27,7 +27,7 @@ from gi import require_version
 
 require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 
 from blockify import blocklist
 from blockify import dbusclient
@@ -224,11 +224,11 @@ class Blockify(object):
 
         self.toggle_mute(2)
 
-        GObject.timeout_add(self.spotify_refresh_interval, self.refresh_spotify_process_state)
-        GObject.timeout_add(self.update_interval, self.update)
+        GLib.timeout_add(self.spotify_refresh_interval, self.refresh_spotify_process_state)
+        GLib.timeout_add(self.update_interval, self.update)
         if self.autoplay:
             # Delay autoplayback until self.spotify_is_playing was called at least once.
-            GObject.timeout_add(self.update_interval + 100, self.start_autoplay)
+            GLib.timeout_add(self.update_interval + 100, self.start_autoplay)
 
         log.info("Blockify started.")
 
@@ -285,7 +285,7 @@ class Blockify(object):
         if self.autodetect and self.current_song and self.current_song_is_ad():
             if self.use_interlude_music and not self.player.temp_disable:
                 self.player.temp_disable = True
-                GObject.timeout_add(self.player.playback_delay, self.player.play_with_delay)
+                GLib.timeout_add(self.player.playback_delay, self.player.play_with_delay)
             self.ad_found()
             return True
 
@@ -306,7 +306,7 @@ class Blockify(object):
 
         # Unmute with a certain delay to avoid the last second
         # of commercial you sometimes hear because it's unmuted too early.
-        GObject.timeout_add(self.unmute_delay, self.unmute_with_delay)
+        GLib.timeout_add(self.unmute_delay, self.unmute_with_delay)
 
         return False
 
